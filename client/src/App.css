@@ -1,3 +1,12 @@
 .bg-blue {
   background-color: #1f3f6d;
 }
+
+.sideBar {
+  background-color: #BDBDBD;;
+}
+
+.element {
+  scrollbar-width: none;
+  -ms-overflow-style: none; /* Firefox */
+}
