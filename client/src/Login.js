@@ -1,16 +1,34 @@
 import { useNavigate } from "react-router-dom"
 import { useState } from "react"
+import axios from "axios"
 
 function Login() {
     const [userName, setUserName] = useState("")
     const [userPassword, setUserPassword] = useState("")
     const navigate = useNavigate()
 
-    const verificarLogin = (route) => {
-        /// Verificar si las credenciales son correctas con su respectivo modulo
-        console.log(`Nombre de usuario: ${userName}, contrasenia: ${userPassword}. La ruta es: ${route}`)
+    const loginUser = (route) => {
+        axios.get('http://localhost:3001/login', {
+            params: {
+                userName: userName,
+                userPassword: userPassword
+            }
+        })
+        .then((response) => {
+            const userData = response.data
+            console.log(userData)
 
-        navigate(route)
+            if (userData[0].rol === 'ADM') {
+                // Ir a administrador
+                navigate('/empleado')
+            } else {
+                // Ir a mostrar informacion
+                navigate('/empleado-info', { state: { userData } })
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
     }
 
     return (
@@ -24,8 +42,9 @@ function Login() {
                     <input type="password" className='form-control my-4' placeholder='Contraseña'
                         onChange={(e) => setUserPassword(e.target.value)} />
                     <button className='btn btn-outline-light'
-                        onClick={() => verificarLogin('/manifestos')}>INGRESAR</button>
+                        onClick={() => loginUser('/manifestos')}>INGRESAR</button>
                 </div>
+
                 <div className='p-4 bg-black rounded shadow-lg text-center mx-2' style={{ width: '350px' }}>
                     <h5>MONBA-EMPLEADOS</h5>
                     <input className='form-control my-4' placeholder='Usuario'
@@ -33,7 +52,7 @@ function Login() {
                     <input type="password" className='form-control my-4' placeholder='Contraseña'
                         onChange={(e) => setUserPassword(e.target.value)} />
                     <button className='btn btn-outline-light'
-                        onClick={() => verificarLogin('/empleado')}>INGRESAR</button>
+                        onClick={() => loginUser('/empleado')}>INGRESAR</button>
                 </div>
             </div>
         </div>
